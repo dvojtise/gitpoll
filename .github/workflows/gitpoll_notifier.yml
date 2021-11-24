@@ -33,11 +33,8 @@ jobs:
       - name: Run gitpoll
         shell: bash -l {0}
         run: |
-          ls
-          pwd
           echo ${{ env.GITHUB_WORKSPACE }}/gitpoll.s3db
           export JENKINS_USER=${{ secrets.JENKINS_USER }}
           export JENKINS_USER_ACCESS_TOKEN=${{ secrets.JENKINS_USER_ACCESS_TOKEN }}
           export PERSONNAL_GITHUB_ACCESS_TOKEN=${{ secrets.PERSONNAL_GITHUB_ACCESS_TOKEN }}
           python gitpoll.py gemoc.config
-          ls
