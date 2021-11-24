@@ -1,0 +1,12 @@
+name: gitpoll
+channels:
+  - conda-forge
+dependencies:
+  - python=2
+  - pip
+  - reportlab
+  - git
+  - pyyaml
+  - yaml
+  - gitpython
+  - requests
