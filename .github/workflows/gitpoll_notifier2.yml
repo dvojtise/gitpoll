@@ -24,6 +24,14 @@ jobs:
           channel-priority: strict
           environment-file: environment.yml
           use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!    - name: Run gitpoll
+      - name: Cache gitpoll
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/gitpoll.s3db
       - shell: bash -l {0}
         run: |
+          export JENKINS_USER=${{ secrets.JENKINS_USER }}
+          export JENKINS_USER_ACCESS_TOKEN=${{ secrets.JENKINS_USER_ACCESS_TOKEN }}
+          export PERSONNAL_GITHUB_ACCESS_TOKEN=${{ secrets.PERSONNAL_GITHUB_ACCESS_TOKEN }}
           python gitpoll.py gemoc.config
