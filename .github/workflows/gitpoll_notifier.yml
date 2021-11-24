@@ -27,9 +27,9 @@ jobs:
       - name: Cache gitpoll
         uses: actions/cache@v2
         with:
-          key: ${{ runner.os }}-build-2
+          key: ${{ runner.os }}-build-3
           path: |
-            ${{ env.GITHUB_WORKSPACE }}/gitpoll.s3db
+            ./gitpoll.s3db
       - name: Run gitpoll
         shell: bash -l {0}
         run: |
