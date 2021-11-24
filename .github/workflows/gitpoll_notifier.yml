@@ -1,4 +1,4 @@
-name: Python Package using Conda
+name: Gitpoll notification
 
 on: [push]
 
@@ -13,7 +13,7 @@ jobs:
     - name: Set up Python 
       uses: actions/setup-python@v2
       with:
-        python-version: 3.10
+        python-version: 2.7.18
     - name: Add conda to system path
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
