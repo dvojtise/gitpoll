@@ -27,7 +27,7 @@ jobs:
       - name: Cache gitpoll
         uses: actions/cache@v2
         with:
-          key: ${{ runner.os }}-build-${{ hashFiles('gitpoll.s3db') }}
+          key: ${{ runner.os }}-build
           path: |
             ~/gitpoll.s3db
       - name: Run gitpoll
