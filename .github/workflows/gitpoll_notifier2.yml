@@ -3,7 +3,7 @@ name: Gitpoll notification2
 on: [push]
 
 jobs:
-  caching-example:
+  build:
     name: Caching
     runs-on: "ubuntu-latest"
     steps:
@@ -27,6 +27,7 @@ jobs:
       - name: Cache gitpoll
         uses: actions/cache@v2
         with:
+          key: ${{ runner.os }}-build-${{ hashFiles('gitpoll.s3db') }}
           path: |
             ~/gitpoll.s3db
       - shell: bash -l {0}
