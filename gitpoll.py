@@ -20,6 +20,9 @@ import git
 import requests
 import sqlite3
 import yaml
+import json
+import os
+from requests.auth import HTTPBasicAuth
 
 
 def get_remote_git_ref(remote_url, branch="master"):
@@ -68,17 +71,58 @@ def set_last_git_ref(db_path, job_name, remote_url, branch, curr_ref):
     conn.commit()
 
 
-def exec_action_url(action_url):
-    print "Executing action: %s" % action_url
-    response = requests.get(action_url)
-    response.raise_for_status()
+def exec_action_url(action):
+    
+    print "Executing action: %s" % action
+    
+    action_request = action.get('request')
+    if not action_request:
+        raise ValueError("action request is required for action %s" % action)
+    
+    action_url = action.get('url')
+    if not action_url:
+        raise ValueError("action url is required for action %s" % action)
+    
+    if action_request == 'github_dispatch':
+        token_env_var_name = action.get('token_env_var_name')
+        if not token_env_var_name:
+            raise ValueError("action token_env_var_name is required for action %s" % action)
+        if os.environ.get(token_env_var_name)  is None:
+           raise ValueError("missing environment variable %s for action %s" % (token_env_var_name, action))
+        head = {
+            'Authorization': "token %s" % os.environ.get(token_env_var_name),
+            'Accept': 'application/vnd.github.v3+json'
+        }
+        data ={"event_type":"event_type"}
+        response = requests.post(action_url, data=json.dumps(data), headers=head)
+        response.raise_for_status()
+    elif action_request == 'jenkins': 
+        
+        print "jenkins : %s" % action
+        
+        token_env_var_name = action.get('token_env_var_name')
+        if not token_env_var_name:
+            response = requests.get(action_url)
+        else:
+            if os.environ.get(token_env_var_name) is None:
+               raise ValueError("missing environment variable %s for action %s" % (token_env_var_name, action))           
+            jenkins_user_env_var_name = action.get('jenkins_user_env_var_name')
+            if not jenkins_user_env_var_name:
+                raise ValueError("missing environment variable %s for action %s" % (jenkins_user_env_var_name, action))
+            response = requests.post("%s" %  action_url,
+                                     auth = HTTPBasicAuth(os.environ.get(jenkins_user_env_var_name), os.environ.get(token_env_var_name))) 
+            # response = requests.get("%s?token=%s" % (action_url, os.environ.get(token_env_var_name)))
+        response.raise_for_status()        
+    else:
+        raise ValueError("invalide action request for action %s" % action)
+
 
 
 def process_job(db_path, job_name, job_config):
     run_action = True
-    action_url = job_config.get('action_url')
-    if not action_url:
-        raise ValueError("action_url is required for job %s" % job_name)
+    action = job_config.get('action')
+    if not action:
+        raise ValueError("action is required for job %s" % job_name)
 
     for repo in job_config.get('repos', []):
         remote_url = repo.get('remote_url')
@@ -102,7 +146,7 @@ def process_job(db_path, job_name, job_config):
 
         if curr_ref != previous_ref:
             if run_action:
-                exec_action_url(action_url)
+                exec_action_url(action)
                 run_action = False
             set_last_git_ref(
                 db_path, job_name, remote_url, branch, curr_ref)
