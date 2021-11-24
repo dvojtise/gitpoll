@@ -10,14 +10,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python 
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9.5
     - name: Add conda to system path
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
         echo $CONDA/bin >> $GITHUB_PATH
     - name: Install dependencies
       run: |
-        conda env create --file environment.yml
-        conda activate gitpoll
+        conda env update  --file environment.yml --name base
     - name: Run gitpoll
       run: |
         python gitpoll.py gemoc.config
