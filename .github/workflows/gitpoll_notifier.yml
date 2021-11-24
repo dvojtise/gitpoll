@@ -29,11 +29,11 @@ jobs:
         with:
           key: ${{ runner.os }}-build
           path: |
-            ~/gitpoll.s3db
+            ${{ env.GITHUB_WORKSPACE }}/gitpoll.s3db
       - name: Run gitpoll
         shell: bash -l {0}
         run: |
-          ls ~
+          ls
           pwd
           export JENKINS_USER=${{ secrets.JENKINS_USER }}
           export JENKINS_USER_ACCESS_TOKEN=${{ secrets.JENKINS_USER_ACCESS_TOKEN }}
