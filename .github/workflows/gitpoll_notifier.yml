@@ -39,3 +39,4 @@ jobs:
           export JENKINS_USER_ACCESS_TOKEN=${{ secrets.JENKINS_USER_ACCESS_TOKEN }}
           export PERSONNAL_GITHUB_ACCESS_TOKEN=${{ secrets.PERSONNAL_GITHUB_ACCESS_TOKEN }}
           python gitpoll.py gemoc.config
+          ls
