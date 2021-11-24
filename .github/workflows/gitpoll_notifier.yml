@@ -30,7 +30,8 @@ jobs:
           key: ${{ runner.os }}-build-${{ hashFiles('gitpoll.s3db') }}
           path: |
             ~/gitpoll.s3db
-      - shell: bash -l {0}
+      - name: Run gitpoll
+        shell: bash -l {0}
         run: |
           export JENKINS_USER=${{ secrets.JENKINS_USER }}
           export JENKINS_USER_ACCESS_TOKEN=${{ secrets.JENKINS_USER_ACCESS_TOKEN }}

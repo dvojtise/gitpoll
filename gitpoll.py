@@ -165,13 +165,16 @@ def main():
     check_db(db_path)
 
     jobs = config.get('jobs', {})
+    nberror = 0
     for job_name in jobs:
         try:
             process_job(db_path, job_name, jobs[job_name])
         except Exception as ex:
             print "job failed: %s" % job_name
             print ex
-
+            nberror = nberror +1
+            
+    sys.exit(nberror)
 
 if __name__ == "__main__":
     main()
